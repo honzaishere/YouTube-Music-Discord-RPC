@@ -54,7 +54,7 @@ module.exports.setActivity = async (title, author, photo, progress, fullLength) 
         {
             smallImageText: "YouTube Music",
             smallImageKey: "badge",
-            largeImageKey: "honzawashere",
+            largeImageText: "honzawashere",
             startTimestamp: startTime,
             endTimestamp: endTime,
             type: 4,
