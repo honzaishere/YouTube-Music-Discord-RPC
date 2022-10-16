@@ -1,0 +1,49 @@
+{
+  "name": "youtube-music",
+  "version": "2.0.7",
+  "description": "YouTube Music App with modifications.",
+  "main": "Index.js",
+  "repository": {
+    "url": "https://github.com/honzaishere/youtube-music",
+    "type": "git"
+  },
+  "author": "honzawashere",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^19.0.10",
+    "electron-builder": "^23.1.0"
+  },
+  "build": {
+    "appId": "honzawashere.youtube.music",
+    "productName": "YouTube Music"
+  },
+  "scripts": {
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "@cliqz/adblocker-electron": "^1.25.0",
+    "@ffmpeg/ffmpeg": "^0.11.5",
+    "browser-id3-writer": "^4.4.0",
+    "chroma-js": "^2.4.2",
+    "console-title": "^1.1.0",
+    "custom-electron-titlebar": "^4.1.0",
+    "discord-rpc": "^4.0.1",
+    "electron-better-web-request": "^1.0.1",
+    "electron-is": "^3.0.0",
+    "electron-unhandled": "^4.0.1",
+    "ffmpeg-static": "^5.1.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "get-image-colors": "^4.0.1",
+    "get-pixels": "^3.3.3",
+    "hex-to-hsl": "^1.0.2",
+    "jpeg-js": "^0.4.4",
+    "marker": "^0.1.2",
+    "moment": "^2.29.4",
+    "node-fetch": "^2.6.7",
+    "request": "^2.88.2",
+    "simpl.db": "^2.10.2",
+    "tslib": "^2.4.0",
+    "ytdl-core": "^4.11.2"
+  }
+}
