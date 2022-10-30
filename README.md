@@ -1,7 +1,7 @@
 # YouTube Music
-### Greatest application for music by Google Inc. and edited by @iwillfightfordream
+### Greatest application for music by Google Inc. and edited by @honzawashere
 
-![YouTube Music](https://raw.githubusercontent.com/iwillfightfordream/YouTube-Music/main/Screenshots/ColorChangerEnabled.png)
+![YouTube Music](https://raw.githubusercontent.com/honzawashere/YouTube-Music/main/Screenshots/ColorChangerEnabled.png)
 
 ## Why?
 YouTube Music itself is included with lots of features, but this modded application can get from YouTube Music even more and helps you to improve your experience.
@@ -17,18 +17,18 @@ You can expect:
 ## What are functions of this app?
 Options are separated to three groups:
 - Discord
-> Plugin Enabled: Enables/Disables [Discord Rich Presence](https://raw.githubusercontent.com/iwillfightfordream/YouTube-Music/main/Screenshots/RPC.png)
+> Plugin Enabled: Enables/Disables [Discord Rich Presence](https://raw.githubusercontent.com/honzawashere/YouTube-Music/main/Screenshots/RPC.png)
 
-> Privacy Mode: Enables/Disables Song Name, Author, Thumbnail and Button URL [Screenshot](https://raw.githubusercontent.com/iwillfightfordream/YouTube-Music/main/Screenshots/PrivacyMode.png)
+> Privacy Mode: Enables/Disables Song Name, Author, Thumbnail and Button URL [Screenshot](https://raw.githubusercontent.com/honzawashere/YouTube-Music/main/Screenshots/PrivacyMode.png)
 
-> Watch Video Button: Enables/Disables Listen [Button](https://raw.githubusercontent.com/iwillfightfordream/YouTube-Music/main/Screenshots/ListenButton.png)
+> Watch Video Button: Enables/Disables Listen [Button](https://raw.githubusercontent.com/honzawashere/YouTube-Music/main/Screenshots/ListenButton.png)
 
-> Time Left: Enables/Disables remaining [song's time text](https://raw.githubusercontent.com/iwillfightfordream/YouTube-Music/main/Screenshots/TimeLeft.png)
+> Time Left: Enables/Disables remaining [song's time text](https://raw.githubusercontent.com/honzawashere/YouTube-Music/main/Screenshots/TimeLeft.png)
 
-> Playback State: Enables/Disables [playing](https://raw.githubusercontent.com/iwillfightfordream/YouTube-Music/main/Screenshots/Playing.png)/[pause](https://raw.githubusercontent.com/iwillfightfordream/YouTube-Music/main/Screenshots/Paused.png)
+> Playback State: Enables/Disables [playing](https://raw.githubusercontent.com/honzawashere/YouTube-Music/main/Screenshots/Playing.png)/[pause](https://raw.githubusercontent.com/iwillfightfordream/YouTube-Music/main/Screenshots/Paused.png)
 
 - Tweaks/Mods
 
-> Color Changer: [Enables](https://raw.githubusercontent.com/iwillfightfordream/YouTube-Music/main/Screenshots/ColorChangerEnabled.png)/[Disables](https://raw.githubusercontent.com/iwillfightfordream/YouTube-Music/main/Screenshots/ColorChangerDisabled.png) picking color from current song's thumbnail and applying it to player (if you are watching Music Video or Video, color will be black.
+> Color Changer: [Enables](https://raw.githubusercontent.com/honzawashere/YouTube-Music/main/Screenshots/ColorChangerEnabled.png)/[Disables](https://raw.githubusercontent.com/honzawashere/YouTube-Music/main/Screenshots/ColorChangerDisabled.png) picking color from current song's thumbnail and applying it to player (if you are watching Music Video or Video, color will be black.
 
 - Other
