@@ -1,3 +1,0 @@
-@echo off
-electron .
-pause
