@@ -1,0 +1,41 @@
+{
+  "name": "youtube-music",
+  "version": "0.0.1",
+  "description": "YouTube Music's app but with more options and modifications which can improve your experience.",
+  "main": "Index.js",
+  "scripts": {
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^26.1.0",
+    "electron-builder": "^24.6.4"
+  },
+  "build": {
+    "appId": "honzawashere.youtube.music",
+    "productName": "YouTube Music",
+    "icon": "icons/icon.ico",
+    "asarUnpack": [
+      "node_modules/ffmpeg-static/bin/${os}/${arch}/ffmpeg",
+      "node_modules/ffmpeg-static/index.js",
+      "node_modules/ffmpeg-static/package.json"
+    ]
+  },
+  "author": "honzawashere",
+  "license": "ISC",
+  "dependencies": {
+    "@cliqz/adblocker-electron": "^1.26.7",
+    "@cliqz/adblocker-electron-preload": "^1.26.7",
+    "browser-id3-writer": "^4.4.0",
+    "chroma-js": "^2.4.2",
+    "discord-rpc": "^4.0.1",
+    "electron-unhandled": "^4.0.1",
+    "ffmpeg-static": "^5.2.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "get-pixels": "^3.3.3",
+    "node-fetch": "^2.6.7",
+    "simpl.db": "^2.12.1",
+    "youtubei": "^1.1.2",
+    "ytdl-core": "^4.11.5"
+  }
+}
