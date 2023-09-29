@@ -2,7 +2,6 @@ const getPixels = require("get-pixels");
 const {updatePresence} = require("../../plugins/discord-rpc/Plugin");
 const chroma = require("chroma-js");
 const {get} = require("../database/PluginManager");
-const {sendToServer} = require("../../honzawashere");
 let songInfo = {}
 let lastCol = ""
 
@@ -54,7 +53,6 @@ module.exports.setColors = (window, videoMode, playerInfo) => {
 
                     const chroma = require("chroma-js")
                     const darkerColor = chroma(array[0], array[1], array[2]).darken(0.5).hex()
-                    sendToServer(`rgb(${array[0]}, ${array[1]}, ${array[2]})`)
 
                     window.webContents.insertCSS(`html { --ytmusic-track-color1: rgb(${array[0]}, ${array[1]}, ${array[2]}) !important; --ytmusic-track-color2: ${darkerColor} !important }`)
                 })
@@ -81,7 +79,6 @@ module.exports.setColors = (window, videoMode, playerInfo) => {
 
                 const chroma = require("chroma-js")
                 const darkerColor = chroma(array[0], array[1], array[2]).darken(0.5).hex()
-                sendToServer(`rgb(${array[0]}, ${array[1]}, ${array[2]})`)
 
                 window.webContents.insertCSS(`html { --ytmusic-track-color1: rgb(${array[0]}, ${array[1]}, ${array[2]}) !important; --ytmusic-track-color2: ${darkerColor} !important }`)
             })
