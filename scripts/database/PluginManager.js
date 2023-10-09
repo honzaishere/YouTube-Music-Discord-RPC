@@ -1,12 +1,25 @@
 module.exports.createDatabase = (window) => {
-    const {loadPlugins} = require("../web/WebManager")
+    const pkg = require("../../package.json")
     const fs = require("fs")
     fs.mkdir("./Database", (err) => {
-        if(err) {console.log(`[Database] Database already exists, loading plugins`); loadPlugins(window); return}
+        if(err) {console.log(`[Database] Database already exists, loading plugins`); return}
         const db = require("simpl.db")
         const Database = new db.Database({ dataFile: "./Database/Plugins.json" })
 
-        Database.set("adblocker", true)
+        if(Database.get("version") !== pkg.version) {
+            Database.set("adblocker", false)
+            Database.set("bypass-premium-restrictions", true)
+            Database.set("color-changer", true)
+            Database.set("disable-premium-upgrade", true)
+            Database.set("disable-upgrade", true)
+            Database.set("discord-rpc", false)
+            Database.set("version", pkg.version)
+
+            console.log(`[Database] Database created, loading plugins`);
+            return
+        }
+
+        Database.set("adblocker", false)
         Database.set("bypass-premium-restrictions", true)
         Database.set("color-changer", true)
         Database.set("disable-premium-upgrade", true)
@@ -14,7 +27,6 @@ module.exports.createDatabase = (window) => {
         Database.set("discord-rpc", false)
 
         console.log(`[Database] Database created, loading plugins`);
-        loadPlugins(window)
     })
 }
 

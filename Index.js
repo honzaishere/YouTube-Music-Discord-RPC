@@ -2,11 +2,23 @@ const electron = require("electron")
 const path = require("path");
 const unhandled = require("electron-unhandled")
 
-const {finishWebLoad, preloadPlugins} = require("./scripts/web/WebManager");
+const {finishWebLoad, preloadPlugins, loadPlugins} = require("./scripts/web/WebManager");
 const {changePlayState, checkSongInfo} = require("./scripts/web/SongInfoManager");
-const {createDatabase, get} = require("./scripts/database/PluginManager");
+const {createDatabase, get, set} = require("./scripts/database/PluginManager");
+
+const gotTheLock = electron.app.requestSingleInstanceLock();
+if (!gotTheLock) {
+    process.exit()
+}
+
+let w
 
 unhandled({ showDialog: false, logger: console.log })
+
+if(get("gamer-mode") === true) {
+    console.log(`[Window] app.disableHardwareAcceleration() called.`)
+    electron.app.disableHardwareAcceleration()
+}
 
 electron.app.on("ready", async () => {
     let pr
@@ -30,6 +42,7 @@ electron.app.on("ready", async () => {
     )
 
     this.browserWindow = window
+    w = window
 
     preloadPlugins(window)
     await createDatabase(window)
@@ -41,10 +54,7 @@ electron.app.on("ready", async () => {
 
     console.log(`[Window] Loading YouTube Music page...`)
     window.loadURL("https://music.youtube.com").then(() => {
-        window.webContents.on("did-finish-load", () => {
-            finishWebLoad(window)
-        })
-
+        finishWebLoad(window)
         console.log(`[Window] Showing window`)
         window.show()
     })
@@ -52,11 +62,45 @@ electron.app.on("ready", async () => {
     window.on("minimize", () => {
         console.log(`[Window] Video is hidden now to increase performance`)
         window.webContents.executeJavaScript(`if(document.querySelector("video")) { document.querySelector("video").classList.add("video-disable-performance") }`)
+        window.webContents.executeJavaScript(`document.querySelector("body").classList.add("gamer-mode")`)
+        if(get("gamer-mode") === true) {
+            set("color-changer", false)
+        }
     })
 
     window.on("restore", () => {
         console.log(`[Window] Video is shown again because app is not minimized anymore`)
         window.webContents.executeJavaScript(`if(document.querySelector("video")) { document.querySelector("video").classList.remove("video-disable-performance") }`)
+        window.webContents.executeJavaScript(`document.querySelector("body").classList.remove("gamer-mode")`)
+        if(get("gamer-mode") === true) {
+            set("color-changer", true)
+        }
+    })
+
+    window.on("blur", () => {
+        if(get("gamer-mode") === true) {
+            console.log(`[Window] Video is hidden now to increase performance`)
+            window.webContents.executeJavaScript(`if(document.querySelector("video")) { document.querySelector("video").classList.add("video-disable-performance") }`)
+            window.webContents.executeJavaScript(`document.querySelector("body").classList.add("gamer-mode")`)
+            set("color-changer", false)
+        }
+    })
+
+    window.on("focus", () => {
+        if(get("gamer-mode") === true) {
+            console.log(`[Window] Video is shown again because app is not minimized anymore`)
+            window.webContents.executeJavaScript(`if(document.querySelector("video")) { document.querySelector("video").classList.remove("video-disable-performance") }`)
+            window.webContents.executeJavaScript(`document.querySelector("body").classList.remove("gamer-mode")`)
+            set("color-changer", true)
+        }
+    })
+
+    window.on("enter-full-screen", () => {
+        window.setMenuBarVisibility(false)
+    })
+
+    window.on("leave-full-screen", () => {
+        window.setMenuBarVisibility(true)
     })
 
     window.webContents.on("devtools-opened", () => {
@@ -68,21 +112,15 @@ electron.app.on("ready", async () => {
     })
 
     electron.ipcMain.on("play", () => {
-        if(get("discord-rpc") === true) {
-            changePlayState(window, 'play')
-        }
+        changePlayState(window, 'play')
     })
 
     electron.ipcMain.on("seek", () => {
-        if(get("discord-rpc") === true) {
-            changePlayState(window, 'play')
-        }
+        changePlayState(window, 'play')
     })
 
     electron.ipcMain.on("pause", () => {
-        if(get("discord-rpc") === true) {
-            changePlayState(window, 'pause')
-        }
+        changePlayState(window, 'pause')
     })
 
     electron.ipcMain.on("song-info", () => {
@@ -91,9 +129,28 @@ electron.app.on("ready", async () => {
 
     electron.ipcMain.on("preload-enabled", () => {
         console.log("[Preload] Preload script enabled")
+        loadPlugins(window)
     })
 
-    window.webContents.on("page-title-updated", (event) => {
-        event.preventDefault()
+    window.on("close", () => {
+        electron.app.quit()
     })
+})
+
+electron.app.on("second-instance", () => {
+    if(!w) {
+        process.exit()
+        console.log(`[Window] Already one session running, closing...`)
+        return
+    }
+
+    if(w.isMinimized()) {
+        w.restore()
+    }
+
+    if(!w.isVisible()) {
+        w.show()
+    }
+
+    w.focus()
 })

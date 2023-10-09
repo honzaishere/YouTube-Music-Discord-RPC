@@ -18,5 +18,10 @@ module.exports.load = (window) => {
     div#guide-content { background: black !important }
     tp-yt-paper-listbox.ytmusic-menu-popup-renderer { border: 1px solid transparent !important; border-radius: 8px !important }
     .yt-simple-endpoint, .logo.ytmusic-logo { -webkit-user-drag: none !important }
+    ytmusic-app-layout[player-page-open] ytmusic-search-box[is-bauhaus-sidenav-enabled][opened] .search-box.ytmusic-search-box, ytmusic-app-layout[player-page-open] ytmusic-search-box[is-bauhaus-sidenav-enabled] #suggestion-list.ytmusic-search-box, ytmusic-app-layout[player-page-open] ytmusic-search-suggestion { background: var(--ytmusic-track-color1) !important }
+    ytmusic-app-layout[player-page-open] ytmusic-search-box[is-bauhaus-sidenav-enabled] { --ytmusic-search-background: var(--ytmusic-track-color1) !important; }
+    ytmusic-app-layout[player-page-open] tp-yt-iron-icon.style-scope.ytmusic-search-suggestion { fill: white !important }
+    
+    yt-img-shadow[object-fit=CONTAIN] img.yt-img-shadow { object-fit: cover !important }
     `)
 }

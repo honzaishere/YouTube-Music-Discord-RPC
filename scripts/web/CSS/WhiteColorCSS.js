@@ -10,5 +10,7 @@ module.exports.load = (window) => {
     tp-yt-paper-toggle-button[checked]:not([disabled]) .toggle-button.tp-yt-paper-toggle-button { background-color: white !important }
     div#toggleButton:hover { cursor: pointer }
     .time-info.ytmusic-player-bar { color: white !important }
+    ytmusic-player-bar { color: #ffffffb3 !important }
+    .spinner-layer.tp-yt-paper-spinner-lite { color: white !important }
     `)
 }

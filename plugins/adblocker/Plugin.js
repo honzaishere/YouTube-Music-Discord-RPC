@@ -11,7 +11,7 @@ module.exports.plugin = {
                 const { browserWindow } = require("../../Index")
                 if(item.checked) {
                     set("adblocker", true)
-                    this.enable(browserWindow)
+                    this.load(browserWindow)
                 } else {
                     set("adblocker", false)
                     this.disable()
@@ -24,7 +24,11 @@ module.exports.plugin = {
 }
 
 module.exports.preload = (window) => {
-    return
+    if(get("adblocker") === true) {
+        this.load(window)
+    } else {
+        return
+    }
 }
 
 module.exports.disable = () => {
@@ -32,7 +36,9 @@ module.exports.disable = () => {
     electron.dialog.showMessageBox({ title: "YouTube Music", message: "Please reload the app to disable adBlocker." })
 }
 
-module.exports.enable = (window) => {
+module.exports.enable = () => { return }
+
+module.exports.load = (window) => {
     const { ElectronBlocker } = require('@cliqz/adblocker-electron')
     const { fetch } = require("node-fetch")
     const fs = require("fs/promises")

@@ -1,17 +1,24 @@
 require("@cliqz/adblocker-electron-preload/dist/preload.cjs")
 
-const { ipcRenderer } = require("electron")
-const {join} = require("path");
+const {ipcRenderer} = require("electron")
 const $ = document.querySelector.bind(document);
 
 ipcRenderer.send("preload-enabled")
 
 document.addEventListener("DOMContentLoaded", () => {
     const observer = new MutationObserver(() => {
+        document.querySelector("#content").classList.add("ytmusic-app-content")
+
         const api = $("#movie_player");
         if (api) {
             observer.disconnect();
             const video = $("video")
+            video.id = "video"
+
+            const title = $("title")
+            title.id = "t"
+
+            observer2.observe(document.getElementById("video"), {attributes: true, childList: true, subtree: true})
 
             video.addEventListener("loadstart", () => {
                 ipcRenderer.send("song-info")
@@ -28,15 +35,32 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     })
 
-    document.querySelector("#content").classList.add("ytmusic-app-content")
+    const observer2 = new MutationObserver(() => {
+        const video = document.querySelector("#video")
+        const data = document.querySelector("#player").getAttribute("video-mode")
 
-    observer.observe(document.documentElement, { childList: true, subtree: true });
+        if (data === '') {
+            const width = video.style.width
+            const height = video.style.height
+
+            const songControls = document.querySelector("#player > div.song-media-controls.style-scope.ytmusic-player")
+
+            songControls.style.width = width
+            songControls.style.height = height
+            return
+        }
+        const songControls = document.querySelector("#player > div.song-media-controls.style-scope.ytmusic-player")
+        songControls.style.width = "100%"
+        songControls.style.height = "100%"
+    })
+
+    observer.observe(document.documentElement, {childList: true, subtree: true});
 
     window.onplay = () => {
         navigator.mediaSession.metadata = new MediaMetadata({
             title: "YouTube Music",
             artwork: [
-                { src: join(__dirname, "Icons", "icon.ico") }
+                {src: "https://raw.githubusercontent.com/honzawashere/YouTube-Music/new/icons/icon.ico"}
             ]
         })
         navigator.mediaSession.playbackState = "playing"

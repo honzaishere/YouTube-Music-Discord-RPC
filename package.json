@@ -1,6 +1,6 @@
 {
   "name": "youtube-music",
-  "version": "3.0.0",
+  "version": "3.0.2",
   "description": "YouTube Music's app but with more options and modifications which can improve your experience.",
   "main": "Index.js",
   "scripts": {
@@ -24,7 +24,7 @@
   "author": "honzawashere",
   "license": "ISC",
   "dependencies": {
-    "@cliqz/adblocker-electron": "^1.26.7",
+    "@cliqz/adblocker-electron": "^1.26.8",
     "@cliqz/adblocker-electron-preload": "^1.26.7",
     "browser-id3-writer": "^4.4.0",
     "chroma-js": "^2.4.2",
@@ -34,6 +34,8 @@
     "fluent-ffmpeg": "^2.1.2",
     "get-pixels": "^3.3.3",
     "node-fetch": "^2.6.7",
+    "node-vibrant": "^3.2.1-alpha.1",
+    "sharp": "^0.32.6",
     "simpl.db": "^2.12.1",
     "youtubei": "^1.1.2",
     "ytdl-core": "^4.11.5"

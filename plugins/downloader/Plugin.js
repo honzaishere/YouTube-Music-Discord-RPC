@@ -1,15 +1,4 @@
-const {get, set} = require("../../scripts/database/PluginManager")
-const path = require("path");
-const {readFileSync} = require("fs");
 const {getSongInfo} = require("../../scripts/web/SongInfoManager");
-const {browserWindow} = require("../../Index");
-const electron = require("electron");
-const ffmpeg = require("fluent-ffmpeg");
-const ytdl = require("ytdl-core");
-const os = require("os");
-const ID3Writer = require("browser-id3-writer");
-const fs = require("fs");
-const fetch = require("node-fetch");
 
 module.exports.plugin = {
     name: "Downloader",
@@ -44,6 +33,7 @@ module.exports.enable = () => {
 module.exports.downloadMp3 = (window) => {
     const ytdl = require("ytdl-core")
     const ffmpeg = require("fluent-ffmpeg")
+    const sharp = require("sharp")
 
     const ffmpegPath = require('ffmpeg-static').replace(
         'app.asar',
@@ -81,6 +71,7 @@ module.exports.downloadMp3 = (window) => {
         .on("end", async () => {
             const fs = require("fs")
             const ID3Writer = require("browser-id3-writer")
+
             const writer = new ID3Writer(fs.readFileSync(os.homedir() + "/Downloads/" + `${title}.mp3`))
 
             writer.setFrame("TIT2", title)
@@ -100,13 +91,37 @@ module.exports.downloadMp3 = (window) => {
             const fetch = require("node-fetch")
 
             let findImage = await fetch(songInfo.details.thumbnail.thumbnails[0].url.split("?")[0].split("=")[0])
-            let buffer = Buffer.from(await findImage.arrayBuffer())
+            let buff = Buffer.from(await findImage.arrayBuffer())
 
             writer.setFrame('APIC', {
                 type: 3,
-                data: buffer,
+                data: buff,
                 description: `${album === null ? '' : `${album}'s cover`}`
             });
+
+            // const image = sharp(buff)
+            //
+            // image.metadata().then(metadata => {
+            //     const { width, height } = metadata
+            //
+            //     let size
+            //     if(width > height) {
+            //         size = { width: height, height: height }
+            //     } else {
+            //         size = { width: width, height: width }
+            //     }
+            //
+            //     return image.resize(size.width, size.height).toBuffer().then(img => {
+            //         writer.setFrame('APIC', {
+            //             type: 3,
+            //             data: Buffer.from(img),
+            //             description: `${album === null ? '' : `${album}'s cover`}`
+            //         });
+            //     }).catch(e => {
+            //         if(e) return console.log(e)
+            //     })
+            // })
+
             writer.addTag();
 
             window.setTitle(window.getTitle().replace("- Downloading...", "- Writing downloaded data..."))
@@ -144,7 +159,7 @@ module.exports.downloadMp4 = (window) => {
 
     const stream = ytdl(songInfo.details.videoId, {
         filter: "videoandaudio",
-        quality: "highest"
+        quality: "highestaudio"
     })
 
     const title = songInfo.details.title.replace(/[<>:"/\\|?*]/g, '')

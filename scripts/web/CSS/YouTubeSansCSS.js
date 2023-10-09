@@ -37,5 +37,10 @@ module.exports.load = (window) => {
         tp-yt-paper-toast {font-family: "YouTube Sans","Roboto",sans-serif !important}
         ytmusic-chip-cloud-chip-renderer[chip-style=STYLE_TRANSPARENT] a.ytmusic-chip-cloud-chip-renderer {font-family: "YouTube Sans","Roboto",sans-serif !important}
         ytmusic-chip-cloud-chip-renderer[enable-bauhaus-style][chip-style=STYLE_UNKNOWN] a.ytmusic-chip-cloud-chip-renderer, ytmusic-chip-cloud-chip-renderer[enable-bauhaus-style][chip-style=STYLE_DEFAULT] a.ytmusic-chip-cloud-chip-renderer {font-family: "YouTube Sans","Roboto",sans-serif !important}
+        .text.ytmusic-message-renderer {font-family: "YouTube Sans","Roboto",sans-serif !important; color: white !important; }
+        .subtext.ytmusic-message-renderer {font-family: "YouTube Sans","Roboto",sans-serif !important; color: white !important; margin: 4px 0 0 !important}
+        tp-yt-paper-tab {font-family: "YouTube Sans",sans-serif !important}
+        .autoplay.ytmusic-tab-renderer .title.ytmusic-tab-renderer {font-family: "YouTube Sans",sans-serif !important}
+        .autoplay.ytmusic-tab-renderer .subtitle.ytmusic-tab-renderer {font-family: "YouTube Sans",sans-serif !important}
     `)
 }

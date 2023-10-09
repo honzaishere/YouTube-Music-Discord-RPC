@@ -33,6 +33,7 @@ module.exports.connectPresence = () => {
         console.log(`[Discord] Connection created`)
     }).catch(e => {
         if (e) return console.log(`[Discord] Connection was not created - ${e}`)
+        ConnectedRPC = null
     })
 
     RPC.on("disconnect", () => {
@@ -41,12 +42,11 @@ module.exports.connectPresence = () => {
 }
 
 module.exports.updatePresence = (st, progress) => {
-    console.log(`[Discord] Presence updated`)
-
     const songInfoManager = require("../../scripts/web/SongInfoManager")
     const songInfo = songInfoManager.getSongInfo()
 
     if(ConnectedRPC === null) return
+    if(songInfo.details === undefined) return
 
     let length = songInfo.details.lengthSeconds * 1000
 
@@ -116,6 +116,8 @@ module.exports.updatePresence = (st, progress) => {
             if(e) return console.log(e)
         })
     }
+
+    console.log(`[Discord] Presence updated`)
 }
 
 module.exports.preload = () => {
