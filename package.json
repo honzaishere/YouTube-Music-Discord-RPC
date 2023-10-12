@@ -1,6 +1,6 @@
 {
   "name": "youtube-music",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "YouTube Music's app but with more options and modifications which can improve your experience.",
   "main": "Index.js",
   "scripts": {
@@ -29,9 +29,11 @@
     "browser-id3-writer": "^4.4.0",
     "chroma-js": "^2.4.2",
     "discord-rpc": "^4.0.1",
+    "electron-store": "^8.1.0",
     "electron-unhandled": "^4.0.1",
     "ffmpeg-static": "^5.2.0",
     "fluent-ffmpeg": "^2.1.2",
+    "get-image-colors": "^4.0.1",
     "get-pixels": "^3.3.3",
     "node-fetch": "^2.6.7",
     "node-vibrant": "^3.2.1-alpha.1",

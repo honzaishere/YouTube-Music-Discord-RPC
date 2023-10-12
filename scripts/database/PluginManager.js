@@ -1,45 +1,26 @@
-module.exports.createDatabase = (window) => {
+module.exports.createDatabase = () => {
     const pkg = require("../../package.json")
-    const fs = require("fs")
-    fs.mkdir("./Database", (err) => {
-        if(err) {console.log(`[Database] Database already exists, loading plugins`); return}
-        const db = require("simpl.db")
-        const Database = new db.Database({ dataFile: "./Database/Plugins.json" })
+    const store = require("electron-store")
 
-        if(Database.get("version") !== pkg.version) {
-            Database.set("adblocker", false)
-            Database.set("bypass-premium-restrictions", true)
-            Database.set("color-changer", true)
-            Database.set("disable-premium-upgrade", true)
-            Database.set("disable-upgrade", true)
-            Database.set("discord-rpc", false)
-            Database.set("version", pkg.version)
+    const db = new store()
 
-            console.log(`[Database] Database created, loading plugins`);
-            return
-        }
+    if(db.get("app.version") !== pkg.version || db.get("app.version") === undefined) {
+        db.set("app.version", pkg.version)
+    }
 
-        Database.set("adblocker", false)
-        Database.set("bypass-premium-restrictions", true)
-        Database.set("color-changer", true)
-        Database.set("disable-premium-upgrade", true)
-        Database.set("disable-upgrade", true)
-        Database.set("discord-rpc", false)
-
-        console.log(`[Database] Database created, loading plugins`);
-    })
+    return db
 }
 
 module.exports.get = (name) => {
-    const db = require("simpl.db")
-    const Database = new db.Database({ dataFile: "./database/Plugins.json" })
+    const store = require("electron-store")
 
-    return Database.get(name)
+    const db = new store()
+    return db.get("app.plugins." + name) || undefined
 }
 
 module.exports.set = (name, value) => {
-    const db = require("simpl.db")
-    const Database = new db.Database({ dataFile: "./database/Plugins.json" })
+    const store = require("electron-store")
 
-    return Database.set(name, value)
+    const db = new store()
+    return db.set("app.plugins." + name, value)
 }

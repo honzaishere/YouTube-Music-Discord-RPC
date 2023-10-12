@@ -23,5 +23,6 @@ module.exports.load = (window) => {
     .top-row-buttons.ytmusic-player {margin-top: 8px !important; margin-right: 8px !important;}
     ytmusic-player-bar[player-fullscreened_] { --ytmusic-player-bar-height: 72px !important; --ytmusic-like-button-size: none !important; --ytmusic-menu-renderer-button-size: none !important; }
     .thumbnail-overlay.ytmusic-player-queue-item[play-button-state=loading], .thumbnail-overlay.ytmusic-player-queue-item[play-button-state=playing], .thumbnail-overlay.ytmusic-player-queue-item[play-button-state=paused] { opacity: 0 !important }
+    ytmusic-app-layout > [slot=player-bar], #player-bar-background.ytmusic-app-layout { transition-duration: 50ms !important }
     `)
 }

@@ -1,6 +1,4 @@
 const {get, set} = require("../../scripts/database/PluginManager");
-const {browserWindow} = require("../../Index");
-const electron = require("electron");
 module.exports.plugin = {
     name: "Gamer Mode",
     options: [

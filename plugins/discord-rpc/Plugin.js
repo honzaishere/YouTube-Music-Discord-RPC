@@ -17,12 +17,49 @@ module.exports.plugin = {
                     this.disable()
                 }
             }
-        }
+        },
+        // {
+        //     label: "Privacy Mode",
+        //     type: "checkbox",
+        //     checked: get("discord-privacy-mode"),
+        //     click: (item) => {
+        //         const { browserWindow } = require("../../Index")
+        //         if (item.checked) {
+        //             set("discord-privacy-mode", true)
+        //             window.webContents.executeJavaScript("document.querySelector(\"#player\").getPlayer().getCurrentTime()").then(time => {
+        //                 if(get("discord-rpc") === true) {
+        //                     this.updatePresence("play", time)
+        //                 }
+        //             })
+        //         } else {
+        //             set("discord-privacy-mode", false)
+        //             window.webContents.executeJavaScript("document.querySelector(\"#player\").getPlayer().getCurrentTime()").then(time => {
+        //                 if(get("discord-rpc") === true) {
+        //                     this.updatePresence("play", time)
+        //                 }
+        //             })
+        //         }
+        //     }
+        // },
+        // {
+        //     label: "Enabled",
+        //     type: "checkbox",
+        //     checked: get("discord-rpc"),
+        //     click: (item) => {
+        //         const { browserWindow } = require("../../Index")
+        //         if (item.checked) {
+        //             set("discord-rpc", true)
+        //             this.enable(browserWindow)
+        //         } else {
+        //             set("discord-rpc", false)
+        //             this.disable()
+        //         }
+        //     }
+        // },
     ]
 }
 
 const DiscordRPC = require("discord-rpc")
-const songInfoManager = require("../../scripts/web/SongInfoManager");
 const RPC = new DiscordRPC.Client({transport: "ipc"})
 let ConnectedRPC = null
 
@@ -126,6 +163,7 @@ module.exports.preload = () => {
 
 module.exports.enable = (window) => {
     const {changePlayState} = require("../../scripts/web/SongInfoManager");
+    this.connectPresence()
     changePlayState(window, "play")
 }
 

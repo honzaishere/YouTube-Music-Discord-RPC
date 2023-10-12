@@ -1,28 +1,15 @@
-const fs = require("fs");
-const db = require("simpl.db");
-module.exports.createPlaybackDatabase = (window) => {
-    fs.mkdir("./Database", (err) => {
-        if (err) {
-            console.log(`[Database] Playback database already exists, ignoring`);
-            return
-        }
-        const db = require("simpl.db")
-        const Database = new db.Database({dataFile: "./Database/Playback.json"})
+let createdStore = null
 
-        Database.set("songInfo", {})
-    })
+module.exports.createPlaybackDatabase = (window) => {
+    const store = require("electron-store")
+
+    createdStore = new store()
 }
 
 module.exports.getLastSongInfo = () => {
-    const db = require("simpl.db")
-    const Database = new db.Database({ dataFile: "./database/Playback.json" })
-
-    return Database.get("songInfo")
+    return createdStore.get("app.songInfo")
 }
 
 module.exports.setLastSongInfo = (value) => {
-    const db = require("simpl.db")
-    const Database = new db.Database({ dataFile: "./database/Playback.json" })
-
-    return Database.set("songInfo", value)
+    return createdStore.set("app.songInfo", value)
 }

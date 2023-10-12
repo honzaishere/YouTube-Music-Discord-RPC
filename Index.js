@@ -2,7 +2,7 @@ const electron = require("electron")
 const path = require("path");
 const unhandled = require("electron-unhandled")
 
-const {finishWebLoad, preloadPlugins, loadPlugins} = require("./scripts/web/WebManager");
+const {finishWebLoad, preloadPlugins, injectMenu} = require("./scripts/web/WebManager");
 const {changePlayState, checkSongInfo} = require("./scripts/web/SongInfoManager");
 const {createDatabase, get, set} = require("./scripts/database/PluginManager");
 
@@ -22,7 +22,7 @@ if(get("gamer-mode") === true) {
 
 electron.app.on("ready", async () => {
     let pr
-    if(get("adblocker") === false) {
+    if(get("adblocker") === false || get("adblocker") === undefined) {
         pr = path.join(__dirname, "NoAdPreload.js")
     } else {
         pr = path.join(__dirname, "Preload.js")
@@ -41,11 +41,13 @@ electron.app.on("ready", async () => {
         }
     )
 
+    injectMenu(window)
+
     this.browserWindow = window
     w = window
 
     preloadPlugins(window)
-    await createDatabase(window)
+    await createDatabase()
 
     window.webContents.on("will-prevent-unload", (event) => {
         event.preventDefault()
@@ -54,9 +56,14 @@ electron.app.on("ready", async () => {
 
     console.log(`[Window] Loading YouTube Music page...`)
     window.loadURL("https://music.youtube.com").then(() => {
-        finishWebLoad(window)
-        console.log(`[Window] Showing window`)
-        window.show()
+        window.webContents.openDevTools({ mode: "detach" })
+        if(window.webContents.getURL().includes("https://music.youtube.com")) {
+            console.log(`[Window] Showing window`)
+            window.show()
+        } else {
+            console.log(`[Window] Got consent page, inserting css`)
+            window.show()
+        }
     })
 
     window.on("minimize", () => {
@@ -129,7 +136,7 @@ electron.app.on("ready", async () => {
 
     electron.ipcMain.on("preload-enabled", () => {
         console.log("[Preload] Preload script enabled")
-        loadPlugins(window)
+        finishWebLoad(window)
     })
 
     window.on("close", () => {

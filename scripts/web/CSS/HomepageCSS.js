@@ -23,5 +23,10 @@ module.exports.load = (window) => {
     ytmusic-app-layout[player-page-open] tp-yt-iron-icon.style-scope.ytmusic-search-suggestion { fill: white !important }
     
     yt-img-shadow[object-fit=CONTAIN] img.yt-img-shadow { object-fit: cover !important }
+    
+    #sections.ytmusic-guide-renderer { user-select: none !important; }
+    img { -webkit-user-drag: none !important; user-select: none !important; }
+    ::selection { background: var(--ytmusic-track-color1) !important; color: white !important }
+    body { -webkit-user-drag: none !important; user-select: none !important; }
     `)
 }
