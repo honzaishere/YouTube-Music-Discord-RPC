@@ -6,7 +6,7 @@ module.exports.load = (window) => {
     ytmusic-app-layout[player-page-open] #nav-bar-background.ytmusic-app-layout { background: var(--ytmusic-track-color2) !important }
     ytmusic-player-page { background: var(--ytmusic-track-color2) !important }
     ytmusic-app-layout[player-page-open] ytmusic-app[is-bauhaus-sidenav-enabled] #guide-wrapper.ytmusic-app { background: var(--ytmusic-track-color2) !important }
-    html { --ytmusic-track-color1: black; --ytmusic-track-color2: black }
+    html { --ytmusic-track-color1: black; --ytmusic-track-color2: black; --ytmusic-playlist-color: black; }
     ytmusic-app-layout[player-page-open] #nav-bar-background.ytmusic-app-layout { background: var(--ytmusic-track-color2) !important }
     tp-yt-paper-toast { background: var(--ytmusic-track-color2) !important }
     ytmusic-app-layout[player-page-open] ytmusic-guide-renderer { background: var(--ytmusic-track-color2) !important }
@@ -17,5 +17,8 @@ module.exports.load = (window) => {
     
     .duration.ytmusic-player-queue-item, .byline.ytmusic-player-queue-item { color: #ffffffb3 !important }
     .autoplay.ytmusic-tab-renderer .subtitle.ytmusic-tab-renderer { color: #ffffffb3 !important }
+    .av-toggle.ytmusic-av-toggle { background: var(--ytmusic-track-color1) !important; }
+    .song-button.ytmusic-av-toggle, .video-button.ytmusic-av-toggle { background: var(--ytmusic-track-color1) !important; }
+    ytmusic-av-toggle[playback-mode=ATV_PREFERRED] .song-button.ytmusic-av-toggle, ytmusic-av-toggle[playback-mode=OMV_PREFERRED] .video-button.ytmusic-av-toggle { background-color: var(--ytmusic-av-toggle-active) !important; }
     `)
 }

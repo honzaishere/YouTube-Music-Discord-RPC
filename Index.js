@@ -2,9 +2,15 @@ const electron = require("electron")
 const path = require("path");
 const unhandled = require("electron-unhandled")
 
-const {finishWebLoad, preloadPlugins, injectMenu} = require("./scripts/web/WebManager");
-const {changePlayState, checkSongInfo} = require("./scripts/web/SongInfoManager");
-const {createDatabase, get, set} = require("./scripts/database/PluginManager");
+const {finishWebLoad, preloadPlugins, handleURLChange} = require("./scripts/web/WebManager");
+const {changePlayState, checkSongInfo, setLastSongInfo} = require("./scripts/web/SongInfoManager");
+const {createDatabase, get, set, getJSON} = require("./scripts/database/PluginManager");
+const {getLastSongInfo} = require("./scripts/database/PluginManager");
+const bypass_premium = require("./plugins/bypass-premium-restrictions/Plugin");
+const color_changer = require("./plugins/color-changer/Plugin");
+const download = require("./plugins/downloader/Plugin");
+const store = require("electron-store");
+const premium = require("./plugins/premium-features/Plugin");
 
 const gotTheLock = electron.app.requestSingleInstanceLock();
 if (!gotTheLock) {
@@ -12,6 +18,61 @@ if (!gotTheLock) {
 }
 
 let w
+
+function handle(plugin, window) {
+    if(plugin === "adblocker") {
+        const adblocker = require("./plugins/adblocker/Plugin")
+        adblocker.handle()
+    }
+    if(plugin === "disable-miniplayer") {
+        const bypass_premium = require("./plugins/bypass-premium-restrictions/Plugin")
+        bypass_premium.handle(plugin)
+    }
+    if(plugin === "disable-premium-upgrade") {
+        const bypass_premium = require("./plugins/bypass-premium-restrictions/Plugin")
+        bypass_premium.handle()
+    }
+    if(plugin === "color-changer") {
+        const color_changer = require("./plugins/color-changer/Plugin")
+        color_changer.handle()
+    }
+    if(plugin === "color-changer-songs") {
+        const color_changer = require("./plugins/color-changer/Plugin")
+        color_changer.handle_songs()
+    }
+    if(plugin === "color-changer-videos") {
+        const color_changer = require("./plugins/color-changer/Plugin")
+        color_changer.handle_videos()
+    }
+    if(plugin === "color-changer-private-songs") {
+        const color_changer = require("./plugins/color-changer/Plugin")
+        color_changer.handle_private()
+    }
+    if(plugin === "discord-rpc") {
+        const discord = require("./plugins/discord-rpc/Plugin")
+        discord.handle()
+    }
+    if(plugin === "download-mp3") {
+        const download = require("./plugins/downloader/Plugin")
+        download.downloadMp3(window)
+    }
+    if(plugin === "download-mp4") {
+        const download = require("./plugins/downloader/Plugin")
+        download.downloadMp4(window)
+    }
+    if(plugin === "gamer-mode") {
+        const gamer = require("./plugins/gaming-mode/Plugin")
+        gamer.handle()
+    }
+    if(plugin === "show-premium-tag") {
+        const premium = require("./plugins/premium-features/Plugin")
+        premium.handle()
+    }
+    if(plugin === "resume-playback-on-launch") {
+        const res = require("./plugins/resume-playback-on-launch/Plugin")
+        res.handle()
+    }
+}
 
 unhandled({ showDialog: false, logger: console.log })
 
@@ -22,10 +83,10 @@ if(get("gamer-mode") === true) {
 
 electron.app.on("ready", async () => {
     let pr
-    if(get("adblocker") === false || get("adblocker") === undefined) {
-        pr = path.join(__dirname, "NoAdPreload.js")
-    } else {
+    if(get("adblocker") === true) {
         pr = path.join(__dirname, "Preload.js")
+    } else {
+        pr = path.join(__dirname, "NoAdPreload.js")
     }
     const window = new electron.BrowserWindow(
         {
@@ -41,30 +102,44 @@ electron.app.on("ready", async () => {
         }
     )
 
-    injectMenu(window)
-
     this.browserWindow = window
     w = window
+    window.webContents.openDevTools()
+    electron.Menu.setApplicationMenu(null)
 
     preloadPlugins(window)
     await createDatabase()
 
     window.webContents.on("will-prevent-unload", (event) => {
         event.preventDefault()
-        console.log(`[Window] Prevented unloading`)
+        console.log(`[Window] Forced unloading`)
     })
 
-    console.log(`[Window] Loading YouTube Music page...`)
-    window.loadURL("https://music.youtube.com").then(() => {
-        window.webContents.openDevTools({ mode: "detach" })
-        if(window.webContents.getURL().includes("https://music.youtube.com")) {
-            console.log(`[Window] Showing window`)
-            window.show()
-        } else {
-            console.log(`[Window] Got consent page, inserting css`)
-            window.show()
-        }
-    })
+    const oldSongInfo = getLastSongInfo()
+
+    if(get("resume-playback-on-launch") === true && oldSongInfo.details !== undefined) {
+        console.log(`[Window] Loading YouTube Music page with last video...`)
+        window.loadURL("https://music.youtube.com/watch?v=" + oldSongInfo.details.videoId).then(() => {
+            if(window.webContents.getURL().includes("https://music.youtube.com")) {
+                console.log(`[Window] Showing window`)
+                window.show()
+            } else {
+                console.log(`[Window] Got consent page, inserting css`)
+                window.show()
+            }
+        })
+    } else {
+        console.log(`[Window] Loading YouTube Music page...`)
+        window.loadURL("https://music.youtube.com/").then(async () => {
+            if(window.webContents.getURL().includes("https://music.youtube.com")) {
+                console.log(`[Window] Showing window`)
+                window.show()
+            } else {
+                console.log(`[Window] Got consent page, inserting css`)
+                window.show()
+            }
+        })
+    }
 
     window.on("minimize", () => {
         console.log(`[Window] Video is hidden now to increase performance`)
@@ -139,15 +214,24 @@ electron.app.on("ready", async () => {
         finishWebLoad(window)
     })
 
+    electron.ipcMain.on("button-clicked", (e, [args]) => {
+        handle(args, window)
+    })
+
+    window.webContents.on("did-start-navigation", (e, url) => {
+        handleURLChange(window, url)
+    })
+
     window.on("close", () => {
+        setLastSongInfo()
         electron.app.quit()
     })
 })
 
 electron.app.on("second-instance", () => {
     if(!w) {
-        process.exit()
         console.log(`[Window] Already one session running, closing...`)
+        process.exit()
         return
     }
 

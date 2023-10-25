@@ -1,20 +1,11 @@
 const {get} = require("../database/PluginManager");
 const electron = require("electron");
-const PluginsMenuJS = require("./JS/PluginsMenuJS");
-const adblocker = require("../../plugins/adblocker/Plugin");
+const store = require("electron-store");
 const bypass_premium_restrictions = require("../../plugins/bypass-premium-restrictions/Plugin");
 const color_changer = require("../../plugins/color-changer/Plugin");
 const discord_rpc = require("../../plugins/discord-rpc/Plugin");
 const downloader = require("../../plugins/downloader/Plugin");
-const gaming_mode = require("../../plugins/gaming-mode/Plugin");
-const ColorChangerCSS = require("./CSS/ColorChangerCSS");
-const HomepageCSS = require("./CSS/HomepageCSS");
-const PlayerCSS = require("./CSS/PlayerCSS");
-const PlaylistsCSS = require("./CSS/PlaylistsCSS");
-const PluginsMenuCSS = require("./CSS/PluginsMenuCSS");
-const WhiteColorCSS = require("./CSS/WhiteColorCSS");
-const YouTubeSansCSS = require("./CSS/YouTubeSansCSS");
-const GamerModeCSS = require("./CSS/GamerModeCSS");
+const adblocker = require("../../plugins/adblocker/Plugin");
 
 let menu = []
 
@@ -51,29 +42,6 @@ module.exports.finishWebLoad = (window) => {
     }
 }
 
-module.exports.injectMenu = (window) => {
-    const adblocker = require("../../plugins/adblocker/Plugin")
-    const bypass_premium_restrictions = require("../../plugins/bypass-premium-restrictions/Plugin")
-    const color_changer = require("../../plugins/color-changer/Plugin")
-    const discord_rpc = require("../../plugins/discord-rpc/Plugin")
-    const downloader = require("../../plugins/downloader/Plugin")
-    const gaming_mode = require("../../plugins/gaming-mode/Plugin")
-    function push(pl) {
-        menu.push({
-            label: pl.plugin.name,
-            submenu: pl.plugin.options
-        })
-    }
-
-    push(adblocker)
-    push(bypass_premium_restrictions)
-    push(color_changer)
-    push(discord_rpc)
-    push(downloader)
-    push(gaming_mode)
-
-    this.setApplicationMenu(window)
-}
 
 module.exports.loadPlugins = (window) => {
     const adblocker = require("../../plugins/adblocker/Plugin")
@@ -82,14 +50,41 @@ module.exports.loadPlugins = (window) => {
     const discord_rpc = require("../../plugins/discord-rpc/Plugin")
     const downloader = require("../../plugins/downloader/Plugin")
 
-    if(get("adblocker") === true) adblocker.enable(window); console.log(`[adblocker] Enabled`)
-
     // Do not inject until we get the actual YouTube Music page.
     if(window.webContents.getURL().includes("https://music.youtube.com/")) {
-        if (get("disable-premium-upgrade") === true || get("disable-miniplayer") === true) bypass_premium_restrictions.enable(window); console.log(`[bypass-premium-restrictions] Enabled`)
-        if (get("color-changer") === true) color_changer.enable(window); console.log(`[color-changer] Enabled`)
-        if (get("discord-rpc") === true) discord_rpc.enable(window); console.log(`[discord-rpc] Enabled`)
-        downloader.enable(window); console.log(`[downloader] Enabled`)
+        window.webContents.executeJavaScript("ytcfg.data_.IS_SUBSCRIBER").then(is => {
+            console.log(`is`, is)
+            if(is) {
+                const store = require("electron-store")
+                const s = new store()
+                s.set("app.premium-user", true)
+                if(get("show-premium-tag") === true) {
+                    window.webContents.on("page-title-updated", () => {
+                        window.setTitle(window.getTitle().replace("YouTube Music", "YouTube Music Premium"))
+                    })
+                }
+
+                if (get("color-changer") === true) color_changer.enable(window); console.log(`[color-changer] Enabled`)
+                if (get("discord-rpc") === true) discord_rpc.enable(window); console.log(`[discord-rpc] Enabled`)
+                downloader.enable(window); console.log(`[downloader] Enabled`)
+                return
+            }
+            if(!is) {
+                const store = require("electron-store")
+                const s = new store()
+                s.set("app.premium-user", false)
+                window.setTitle("YouTube Music")
+                window.webContents.on("page-title-updated", () => {
+                    window.setTitle("YouTube Music")
+                })
+
+                if (get("adblocker") === true) adblocker.enable(window); console.log(`[adblocker] Enabled`)
+                if (get("disable-premium-upgrade") === true || get("disable-miniplayer") === true) bypass_premium_restrictions.enable(window); console.log(`[bypass-premium-restrictions] Enabled`)
+                if (get("color-changer") === true) color_changer.enable(window); console.log(`[color-changer] Enabled`)
+                if (get("discord-rpc") === true) discord_rpc.enable(window); console.log(`[discord-rpc] Enabled`)
+                downloader.enable(window); console.log(`[downloader] Enabled`)
+            }
+        })
     }
 }
 
@@ -107,15 +102,7 @@ module.exports.preloadPlugins = (window) => {
     downloader.preload(window); console.log(`[downloader] Preloaded`)
 }
 
-module.exports.setApplicationMenu = (window) => {
-    const actualMenu = electron.Menu.buildFromTemplate(
-        [
-            {
-                label: "Plugins",
-                submenu: menu
-            }
-        ]
-    )
-    electron.Menu.setApplicationMenu(actualMenu)
-    console.log(`[Window] Application menu set`)
+module.exports.handleURLChange = (window, url) => {
+    const PlaylistJS = require("./JS/PlaylistJS")
+    if(url.includes(PlaylistJS.info.include)) return PlaylistJS.load(window)
 }

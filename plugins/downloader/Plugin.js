@@ -1,25 +1,12 @@
 const {getSongInfo} = require("../../scripts/web/SongInfoManager");
+const {join} = require("path");
+const {readFileSync, rmSync} = require("fs");
+const ffmpeg = require("fluent-ffmpeg");
+const os = require("os");
+const child_process = require("child_process");
 
 module.exports.plugin = {
     name: "Downloader",
-    options: [
-        {
-            label: "Download as .mp3",
-            click: (item) => {
-                const { browserWindow } = require("../../Index")
-
-                this.downloadMp3(browserWindow)
-            }
-        },
-        {
-            label: "Download as .mp4",
-            click: (item) => {
-                const { browserWindow } = require("../../Index")
-
-                this.downloadMp4(browserWindow)
-            }
-        }
-    ]
 }
 
 module.exports.preload = () => {
@@ -33,7 +20,7 @@ module.exports.enable = () => {
 module.exports.downloadMp3 = (window) => {
     const ytdl = require("ytdl-core")
     const ffmpeg = require("fluent-ffmpeg")
-    const sharp = require("sharp")
+    //const sharp = require("sharp")
 
     const ffmpegPath = require('ffmpeg-static').replace(
         'app.asar',
@@ -45,14 +32,17 @@ module.exports.downloadMp3 = (window) => {
     const os = require("os")
     const songInfo = getSongInfo()
 
-    if(!songInfo.details.videoId) {
+    if (!songInfo.details.videoId) {
         const electron = require("electron")
-        electron.dialog.showMessageBox({ title: "YouTube Music", message: "Please play some video to download." })
+        electron.dialog.showMessageBox({title: "YouTube Music", message: "Please play some video to download."})
         return
     }
-    if(songInfo.videoType === "MUSIC_VIDEO_TYPE_PRIVATELY_OWNED_TRACK") {
+    if (songInfo.videoType === "MUSIC_VIDEO_TYPE_PRIVATELY_OWNED_TRACK") {
         const electron = require("electron")
-        electron.dialog.showMessageBox({ title: "YouTube Music", message: "This video is private (only for you). YouTube Music is not able to download this video." })
+        electron.dialog.showMessageBox({
+            title: "YouTube Music",
+            message: "This video is private (only for you). YouTube Music is not able to download this video."
+        })
         return
     }
 
@@ -85,8 +75,12 @@ module.exports.downloadMp3 = (window) => {
 
                 window.webContents.executeJavaScript("document.querySelector(\"#layout > ytmusic-player-bar > div.middle-controls.style-scope.ytmusic-player-bar > div.content-info-wrapper.style-scope.ytmusic-player-bar > span > span.subtitle.style-scope.ytmusic-player-bar > yt-formatted-string > span:nth-child(5)\").innerHTML").then(year => {
                     writer.setFrame("TYER", year)
-                }).catch(e => { if(e) return })
-            }).catch(e => { if(e) return })
+                }).catch(e => {
+                    if (e) return
+                })
+            }).catch(e => {
+                if (e) return
+            })
 
             const fetch = require("node-fetch")
 
@@ -146,29 +140,71 @@ module.exports.downloadMp4 = (window) => {
 
     const os = require("os")
 
-    if(!songInfo.details.videoId) {
+    if (!songInfo.details.videoId) {
         const electron = require("electron")
-        electron.dialog.showMessageBox({ title: "YouTube Music", message: "Please play some video to download." })
+        electron.dialog.showMessageBox({title: "YouTube Music", message: "Please play some video to download."})
         return
     }
-    if(songInfo.videoType === "MUSIC_VIDEO_TYPE_PRIVATELY_OWNED_TRACK") {
+    if (songInfo.videoType === "MUSIC_VIDEO_TYPE_PRIVATELY_OWNED_TRACK") {
         const electron = require("electron")
-        electron.dialog.showMessageBox({ title: "YouTube Music", message: "This video is private (only for you). YouTube Music is not able to download this video." })
+        electron.dialog.showMessageBox({
+            title: "YouTube Music",
+            message: "This video is private (only for you). YouTube Music is not able to download this video."
+        })
         return
     }
 
     const stream = ytdl(songInfo.details.videoId, {
-        filter: "videoandaudio",
-        quality: "highestaudio"
+        filter: "videoonly",
+        quality: "highest"
+    })
+
+    const stream2 = ytdl(songInfo.details.videoId, {
+        filter: "audioonly",
+        quality: "highest"
     })
 
     const title = songInfo.details.title.replace(/[<>:"/\\|?*]/g, '')
     window.setTitle(window.getTitle() + " - Downloading and writing video data...")
 
+    const videoId = songInfo.details.videoId
+
     ffmpeg(stream)
-        .audioBitrate(256)
-        .save(os.homedir() + "/Downloads/" + `${title}.mp4`)
-        .on("end", async () => {
-            window.setTitle(window.getTitle().replace(" - Downloading and writing video data...", ""))
+        .videoCodec("copy")
+        .save(join(__dirname, videoId + "-video.mp4"))
+        .on("end", () => {
+            ffmpeg(stream2)
+                .audioCodec("aac")
+                .save(join(__dirname, videoId + "-audio.mp4"))
+                .on("end", () => {
+                    const ffmpegCommand = `"` + join(__dirname, "ffmpeg.exe") + `"`;
+                    const ffmpegArguments = [
+                        '-i', `"` + join(__dirname, videoId + "-audio.mp4") + `"`,
+                        '-i', `"` + join(__dirname, videoId + "-video.mp4") + `"`,
+                        `"` + os.homedir() + "/Downloads/" + `${title}.mp4` + `"`,
+                    ];
+
+                    const ffmpegProcess = child_process.spawn(ffmpegCommand, ffmpegArguments, { shell: true })
+
+                    ffmpegProcess.stdout.on("data", (d) => {
+                        console.log(d)
+                    })
+
+                    ffmpegProcess.on('error', (err) => {
+                        console.error('Error executing ffmpeg: ' + err);
+                    });
+
+                    ffmpegProcess.on('exit', (code) => {
+                        if (code === 0) {
+                            console.log('Video and audio merged successfully.')
+                            rmSync("./" + videoId + "-video.mp4")
+                            rmSync("./" + videoId + "-audio.mp4")
+                        } else {
+                            console.error('Error during ffmpeg execution.')
+                        }
+                    });
+                })
         })
 }
+
+//C:\ffmpeg\bin\

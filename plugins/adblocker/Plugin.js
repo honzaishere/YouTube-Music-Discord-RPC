@@ -1,30 +1,25 @@
 const {get, set} = require("../../scripts/database/PluginManager")
 
 module.exports.plugin = {
-    name: "Ad Blocker",
-    options: [
-        {
-            label: "Enabled",
-            type: "checkbox",
-            checked: get("adblocker"),
-            click: (item) => {
-                const { browserWindow } = require("../../Index")
-                if(item.checked) {
-                    set("adblocker", true)
-                    this.load(browserWindow)
-                } else {
-                    set("adblocker", false)
-                    this.disable()
-                    const electron = require("electron")
-                    electron.dialog.showMessageBox({ title: "YouTube Music", message: "Please reload the app to enable adBlocker." })
-                }
-            }
-        }
-    ]
+    name: "Ad Blocker"
+}
+
+module.exports.handle = () => {
+    const {browserWindow} = require("../../Index")
+    if (get("adblocker") === true) {
+        set("adblocker", false)
+        const electron = require("electron")
+        electron.dialog.showMessageBox({title: "YouTube Music", message: "Please reload the app to disable adBlocker."})
+    } else {
+        set("adblocker", true)
+        this.load(browserWindow)
+        const electron = require("electron")
+        electron.dialog.showMessageBox({title: "YouTube Music", message: "Please reload the app to enable adBlocker."})
+    }
 }
 
 module.exports.preload = (window) => {
-    if(get("adblocker") === true) {
+    if (get("adblocker") === true) {
         this.load(window)
     } else {
         return
@@ -32,15 +27,16 @@ module.exports.preload = (window) => {
 }
 
 module.exports.disable = () => {
-    const electron = require("electron")
-    electron.dialog.showMessageBox({ title: "YouTube Music", message: "Please reload the app to disable adBlocker." })
+    return
 }
 
-module.exports.enable = () => { return }
+module.exports.enable = () => {
+    return
+}
 
 module.exports.load = (window) => {
-    const { ElectronBlocker } = require('@cliqz/adblocker-electron')
-    const { fetch } = require("node-fetch")
+    const {ElectronBlocker} = require('@cliqz/adblocker-electron')
+    const {fetch} = require("node-fetch")
     const fs = require("fs/promises")
     const blocker = ElectronBlocker.fromPrebuiltAdsAndTracking(fetch, {
         path: 'adblocker.bin',

@@ -2,76 +2,47 @@ const {get, set} = require("../../scripts/database/PluginManager")
 
 module.exports.plugin = {
     name: "Discord Rich Presence",
-    options: [
-        {
-            label: "Enabled",
-            type: "checkbox",
-            checked: get("discord-rpc"),
-            click: (item) => {
-                const { browserWindow } = require("../../Index")
-                if (item.checked) {
-                    set("discord-rpc", true)
-                    this.enable(browserWindow)
-                } else {
-                    set("discord-rpc", false)
-                    this.disable()
-                }
-            }
-        },
-        // {
-        //     label: "Privacy Mode",
-        //     type: "checkbox",
-        //     checked: get("discord-privacy-mode"),
-        //     click: (item) => {
-        //         const { browserWindow } = require("../../Index")
-        //         if (item.checked) {
-        //             set("discord-privacy-mode", true)
-        //             window.webContents.executeJavaScript("document.querySelector(\"#player\").getPlayer().getCurrentTime()").then(time => {
-        //                 if(get("discord-rpc") === true) {
-        //                     this.updatePresence("play", time)
-        //                 }
-        //             })
-        //         } else {
-        //             set("discord-privacy-mode", false)
-        //             window.webContents.executeJavaScript("document.querySelector(\"#player\").getPlayer().getCurrentTime()").then(time => {
-        //                 if(get("discord-rpc") === true) {
-        //                     this.updatePresence("play", time)
-        //                 }
-        //             })
-        //         }
-        //     }
-        // },
-        // {
-        //     label: "Enabled",
-        //     type: "checkbox",
-        //     checked: get("discord-rpc"),
-        //     click: (item) => {
-        //         const { browserWindow } = require("../../Index")
-        //         if (item.checked) {
-        //             set("discord-rpc", true)
-        //             this.enable(browserWindow)
-        //         } else {
-        //             set("discord-rpc", false)
-        //             this.disable()
-        //         }
-        //     }
-        // },
-    ]
 }
 
 const DiscordRPC = require("discord-rpc")
+const {browserWindow} = require("../../Index");
 const RPC = new DiscordRPC.Client({transport: "ipc"})
 let ConnectedRPC = null
 
+module.exports.handle = () => {
+    if (get("discord-rpc") === false) {
+        set("discord-rpc", true)
+        this.enable(browserWindow)
+        return
+    }
+    if (get("discord-rpc") === true) {
+        set("discord-rpc", false)
+        this.disable()
+    }
+}
+
 module.exports.connectPresence = () => {
     if (ConnectedRPC !== null) return
-    RPC.connect("922907049170464809").then(u => {
-        ConnectedRPC = RPC
-        console.log(`[Discord] Connection created`)
-    }).catch(e => {
-        if (e) return console.log(`[Discord] Connection was not created - ${e}`)
-        ConnectedRPC = null
-    })
+    const s = require("electron-store")
+    const st = new s()
+    if (st.get("app.premium-user") === true) {
+        RPC.connect("1163966541675638874").then(u => {
+            ConnectedRPC = RPC
+            console.log(`[Discord] Connection created`)
+        }).catch(e => {
+            if (e) return console.log(`[Discord] Connection was not created - ${e}`)
+            ConnectedRPC = null
+        })
+    } else {
+        RPC.connect("922907049170464809").then(u => {
+            ConnectedRPC = RPC
+            console.log(`[Discord] Connection created`)
+        }).catch(e => {
+            if (e) return console.log(`[Discord] Connection was not created - ${e}`)
+            ConnectedRPC = null
+        })
+    }
+
 
     RPC.on("disconnect", () => {
         ConnectedRPC = null
@@ -82,15 +53,15 @@ module.exports.updatePresence = (st, progress) => {
     const songInfoManager = require("../../scripts/web/SongInfoManager")
     const songInfo = songInfoManager.getSongInfo()
 
-    if(ConnectedRPC === null) return
-    if(songInfo.details === undefined) return
+    if (ConnectedRPC === null) return
+    if (songInfo.details === undefined) return
 
     let length = songInfo.details.lengthSeconds * 1000
 
     let p
     let u
 
-    if(progress) {
+    if (progress) {
         p = progress
     } else {
         p = 1
@@ -105,7 +76,7 @@ module.exports.updatePresence = (st, progress) => {
         u = songInfo.details.thumbnail.thumbnails[3].url
     }
 
-    if(st === "pause") {
+    if (st === "pause") {
         ConnectedRPC.setActivity(
             {
                 smallImageKey: "pause",
@@ -117,10 +88,9 @@ module.exports.updatePresence = (st, progress) => {
                 state: songInfo.details.author,
             }
         ).catch(e => {
-            if(e) return console.log(e)
+            if (e) return console.log(e)
         })
-    }
-    else if(st === "play") {
+    } else if (st === "play") {
         ConnectedRPC.setActivity(
             {
                 smallImageKey: "play",
@@ -134,7 +104,7 @@ module.exports.updatePresence = (st, progress) => {
                 endTimestamp: endTime
             }
         ).catch(e => {
-            if(e) return console.log(e)
+            if (e) return console.log(e)
         })
     } else {
         ConnectedRPC.setActivity(
@@ -150,7 +120,7 @@ module.exports.updatePresence = (st, progress) => {
                 endTimestamp: endTime
             }
         ).catch(e => {
-            if(e) return console.log(e)
+            if (e) return console.log(e)
         })
     }
 

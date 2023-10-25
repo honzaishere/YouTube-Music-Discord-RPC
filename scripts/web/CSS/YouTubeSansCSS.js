@@ -42,5 +42,7 @@ module.exports.load = (window) => {
         tp-yt-paper-tab {font-family: "YouTube Sans",sans-serif !important}
         .autoplay.ytmusic-tab-renderer .title.ytmusic-tab-renderer {font-family: "YouTube Sans",sans-serif !important}
         .autoplay.ytmusic-tab-renderer .subtitle.ytmusic-tab-renderer {font-family: "YouTube Sans",sans-serif !important}
+        .song-button.ytmusic-av-toggle, .video-button.ytmusic-av-toggle {font-family: "YouTube Sans",sans-serif !important}
+        #info.yt-player-error-message-renderer {font-family: "YouTube Sans",sans-serif !important}
     `)
 }
