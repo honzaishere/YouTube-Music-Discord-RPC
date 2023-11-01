@@ -2,7 +2,7 @@
 ## Modified version of YouTube Music made for Windows using Electron.js
 ### How to debug?
 - Simply clone this repository to a folder, use `npm i` or `yarn add` to install all the modules and then run it with `Start.bat`
-- Don't forget to add `ffmpeg.exe` into the project folder, it is important if you want to use `Downloader`
+- Don't forget to add `ffmpeg.exe` into the project folder, it is important if you want to use `Downloader` (put in it /plugins/downloader/)
 - If you want to add a feature you made to this app, DM me on Discord: `@fightfordream`
 
 ### How to run?
