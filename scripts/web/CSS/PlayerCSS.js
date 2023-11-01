@@ -26,5 +26,20 @@ module.exports.load = (window) => {
     ytmusic-app-layout > [slot=player-bar], #player-bar-background.ytmusic-app-layout { transition-duration: 50ms !important }
     .av.ytmusic-player-page { padding-bottom: 20px !important }
     ytmusic-av-toggle[playback-mode="ATV_PREFERRED"] .song-button.ytmusic-av-toggle, ytmusic-av-toggle[playback-mode="OMV_PREFERRED"] .video-button.ytmusic-av-toggle { background-color: white !important; color: var(--ytmusic-track-color1) !important}
+    .side-panel.modular.style-scope.ytmusic-player-page::-webkit-scrollbar { width: 0px }
+    ytmusic-app-layout[player-fullscreened] > [slot=player-bar] {background: transparent !important;}
+    ytmusic-app-layout[player-fullscreened] div#song-image {background: transparent;}
+    ytmusic-app-layout[player-fullscreened] div#song-image > yt-img-shadow {filter:blur(32px);opacity:60%}
+    ytmusic-app-layout[disable-better-fullscreen] div#song-image > yt-img-shadow {filter:blur(0px) !important;opacity:100% !important}
+    ytmusic-app-layout[disable-better-fullscreen] .fullscreen-container {display:none !important}
+    .fullscreen-container {position: fixed;top:0;left:0;width:100vw;height:100vh;display:none}
+    .song-info-container {position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);}
+    .song-image-container {width: 300px;height: 300px}
+    .song-image-container img {width: auto;height: 300px;border:1px solid transparent;border-radius:8px;position:absolute;left: 50%;transform:translate(-50%)}
+    ytmusic-player {background-color: black !important}
+    .song-data-container h1 {text-align: center;padding: 10px 0px 0px;font-size: 26px;font-weight: 400;}
+    .song-data-container h3 {text-align: center;padding: 0px;font-size: 20px;font-weight: 400;color: #ffffffd8;}
+    ytmusic-player-page[player-fullscreened_] .av.ytmusic-player-page { visibility: hidden !important }
+    ytmusic-app-layout[player-fullscreened] div#fullscreen-container {display: block;}
     `)
 }

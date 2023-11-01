@@ -14,6 +14,7 @@ module.exports.checkSongInfo = (window, playback) => {
         try {
             if (i.playerResponse.videoDetails.videoId === lastVideoId) return
             this.setColors(window, playerInfo.videoMode, playerInfo)
+            this.updateFullscreenMetadata(window, playerInfo)
 
             lastVideoId = i.playerResponse.videoDetails.videoId
         } catch (e) {
@@ -31,6 +32,20 @@ module.exports.updateColors = (window) => {
             return console.log(e)
         }
     })
+}
+
+module.exports.updateFullscreenMetadata = (window, info) => {
+    window.webContents.executeJavaScript(`
+        var trusted_policy = trustedTypes.createPolicy("myPolicy", {
+            createHTML: (string) => {
+                return string;
+            }
+        })
+    
+        document.querySelector("#fullscreen_img").setAttribute("src", document.querySelector("#song-image > yt-img-shadow > img").src)
+        document.querySelector("#song_title_fullscreen").innerHTML = trusted_policy.createHTML("${info.playerResponse.videoDetails.title}")
+        document.querySelector("#song_author_fullscreen").innerHTML = trusted_policy.createHTML("${info.playerResponse.videoDetails.author}")
+    `)
 }
 
 module.exports.resetColors = (window) => {
@@ -101,9 +116,9 @@ module.exports.getSongInfo = () => {
     return songInfo
 }
 
-module.exports.setLastSongInfo = () => {
-    setLastSongInfoDB(songInfo)
-    console.log(`[SongInfo] Saved last SongInfo: ${songInfo.details.videoId}`)
+module.exports.setLastSongInfo = (time, list) => {
+    setLastSongInfoDB(songInfo, time, list)
+    console.log(`[SongInfo] Saved last SongInfo: ${songInfo.details.videoId}, ${time}s, ${list}`)
 }
 
 module.exports.changePlayState = (window, state) => {

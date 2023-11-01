@@ -30,5 +30,6 @@ module.exports.load = (window) => {
         .premium-disabled .toggle-line {display:none;}
         .premium-disabled .toggle-button {display:none;}
         .premium-disabled h1 {color: grey !important;}
+        .close-menu img {position: relative;top: 50%;left: 50%;transform: translate(-50%,-50%);}
    `)
 }

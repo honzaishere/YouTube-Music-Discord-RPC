@@ -1,9 +1,8 @@
 const {getSongInfo} = require("../../scripts/web/SongInfoManager");
 const {join} = require("path");
-const {readFileSync, rmSync} = require("fs");
-const ffmpeg = require("fluent-ffmpeg");
-const os = require("os");
+const {rmSync} = require("fs");
 const child_process = require("child_process");
+const path = require("path");
 
 module.exports.plugin = {
     name: "Downloader",
@@ -34,7 +33,7 @@ module.exports.downloadMp3 = (window) => {
 
     if (!songInfo.details.videoId) {
         const electron = require("electron")
-        electron.dialog.showMessageBox({title: "YouTube Music", message: "Please play some video to download."})
+        electron.dialog.showMessageBox({title: "YouTube Music", message: "Please play some video to download.", icon: path.join(__dirname, "..", "..", "icons", "tray.png")})
         return
     }
     if (songInfo.videoType === "MUSIC_VIDEO_TYPE_PRIVATELY_OWNED_TRACK") {
@@ -142,7 +141,7 @@ module.exports.downloadMp4 = (window) => {
 
     if (!songInfo.details.videoId) {
         const electron = require("electron")
-        electron.dialog.showMessageBox({title: "YouTube Music", message: "Please play some video to download."})
+        electron.dialog.showMessageBox({title: "YouTube Music", message: "Please play some video to download.", icon: path.join(__dirname, "..", "..", "icons", "tray.png")})
         return
     }
     if (songInfo.videoType === "MUSIC_VIDEO_TYPE_PRIVATELY_OWNED_TRACK") {

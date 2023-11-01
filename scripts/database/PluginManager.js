@@ -42,10 +42,12 @@ module.exports.getLastSongInfo = () => {
     return db.get("app.songInfo")
 }
 
-module.exports.setLastSongInfoDB = (value) => {
+module.exports.setLastSongInfoDB = (value, time, list) => {
     const store = require("electron-store")
 
+    const info = { info: value, time: time, list: list }
+
     const db = new store()
-    return db.set("app.songInfo", value)
+    return db.set("app.songInfo", info)
 }
 

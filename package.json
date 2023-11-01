@@ -1,6 +1,6 @@
 {
   "name": "youtube-music",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "YouTube Music's app but with more options and modifications which can improve your experience.",
   "main": "Index.js",
   "scripts": {
@@ -19,6 +19,7 @@
       "node_modules/ffmpeg-static/bin/${os}/${arch}/ffmpeg",
       "node_modules/ffmpeg-static/index.js",
       "node_modules/ffmpeg-static/package.json",
+      "plugins/downloader/*",
       "ffmpeg.exe"
     ]
   },
@@ -30,6 +31,7 @@
     "browser-id3-writer": "^4.4.0",
     "chroma-js": "^2.4.2",
     "discord-rpc": "^4.0.1",
+    "electron-is": "^3.0.0",
     "electron-store": "^8.1.0",
     "electron-unhandled": "^4.0.1",
     "ffmpeg-static": "^5.2.0",
