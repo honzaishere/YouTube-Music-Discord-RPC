@@ -18,6 +18,11 @@ Color Changer - Sets colors for the player (Music videos supported too)
 Discord Rich Presence - Shows what you are currently listening to on Discord
 Downloader - Downloads .mp3 or .mp4 of the currently watched video and puts it to "Downloads" directory of current user
 Gamer Mode - After launching, it disables hardware acceleration and after minimizing it automatically hides app's content to save resources
+Resume playback on launch - Starts playing from the last played song and playlist.
+Improved fullscreen
+Stay in background on close
+Tray
+In-app titlebar
 ```
 
 ### Why this app?
