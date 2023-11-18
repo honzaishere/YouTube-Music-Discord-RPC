@@ -13,6 +13,7 @@
 ### Features
 ```
 adBlocker - Automatically blocks advertisements for you
+Ambient Mode - Creates Ambient Mode effect around video/image
 Bypass Premium Restrictions - Includes stuff like "Disable Miniplayer" (Gives you option to close miniplayer if you want to) or "Disable Premium Upgrade" (Removes "Upgrade" buttons)
 Color Changer - Sets colors for the player (Music videos supported too)
 Discord Rich Presence - Shows what you are currently listening to on Discord
@@ -27,5 +28,6 @@ In-app titlebar
 
 ### Why this app?
 - This app is being updated really often
-- New features are coming every day
-- Easy to use, also makes using of app easier
+- New features are coming almost every week
+- Easy to use, also makes using of the YouTube Music page itself easier
+- Better User Interface
