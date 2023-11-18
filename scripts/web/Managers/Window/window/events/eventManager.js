@@ -1,0 +1,21 @@
+module.exports.loadEvents = (window) => {
+    const WindowBlur = require("./WindowBlur")
+    const WindowClose = require("./WindowClose")
+    const WindowEnterFullscreen = require("./WindowEnterFullscreen")
+    const WindowFocus = require("./WindowFocus")
+    const WindowLeaveFullscreen = require("./WindowLeaveFullscreen")
+    const WindowNavigation = require("./WindowNavigation")
+    const WindowRestore = require("./WindowRestore")
+    const WindowUnload = require("./WindowUnload")
+    const WindowUnmaximize = require("./WindowUnmaximize")
+
+    WindowBlur.load(window)
+    WindowClose.load(window)
+    WindowEnterFullscreen.load(window)
+    WindowFocus.load(window)
+    WindowLeaveFullscreen.load(window)
+    WindowNavigation.load(window)
+    WindowRestore.load(window)
+    WindowUnload.load(window)
+    WindowUnmaximize.load(window)
+}

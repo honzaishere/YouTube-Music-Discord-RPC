@@ -1,3 +1,7 @@
+module.exports.info = {
+    name: "ConsentCSS"
+}
+
 module.exports.load = (window) => {
     window.webContents.insertCSS(`
     body#yDmH0d { background: #0e0e0e !important}

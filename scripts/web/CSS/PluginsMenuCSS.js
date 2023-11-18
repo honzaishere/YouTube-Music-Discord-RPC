@@ -1,3 +1,7 @@
+module.exports.info = {
+    name: "PluginsMenuCSS"
+}
+
 module.exports.load = (window) => {
     window.webContents.insertCSS(`
         .hidden { display: none }
@@ -5,13 +9,13 @@ module.exports.load = (window) => {
         .plugins-dialog {position: fixed;top: 50%;left: 50%;width: 50%;height: 50%;background:var(--ytmusic-track-color1);transform: translate(-50%,-50%);border:1px solid transparent;border-radius: 8px;}
         .plugins-title {height: 15%; border-bottom: 1px solid white; padding: 0px 20px;padding-bottom: 0;height: 10%;}
         .plugins-title h1 {font-size: 20px !important;color:white;font-family: 'Roboto';font-weight: 400;position:relative;margin:0;color:white;border-bottom:white;width:fit-content;margin-top:15px}
-        .close-menu {width: 24px;height: 24px;position: absolute;top:10px;right:20px}
-        .plugins-options {color: white;font-family: 'Roboto';position: absolute;top: 15%;bottom: 0;width: 20%;border-right: 1px solid white}
+        .close-menu {width: 24px;height: 24px;position: absolute;top:15px;right:20px}
+        .plugins-options {color: white;font-family: 'Roboto';position: absolute;top: calc(10% + 15px);bottom: 0;width: 20%;border-right: 1px solid white}
         .option {width: 100%;margin: auto;height: 48px;}
         .option:hover {background: #ffffffb3;color:var(--ytmusic-track-color1);cursor: pointer;}
         .option-selected { background:#ffffffa6;color:var(--ytmusic-track-color1);}
         .option h1 {font-size: 15px;font-weight: 400;margin: 0;position: relative;top: 50%;transform: translate(20px,-50%);}
-        .tab {position: absolute;top: 15%;bottom: 0;left: 20%;right: 0;}
+        .tabxd {position: absolute;top: 15%;bottom: 0;left: 20%;right: 0;}
         .tabc {padding: 0 20px !important;height: 100%;overflow-y: scroll;}
         .section h1 {color: white;border-bottom: 1px solid white;}
         .setting {color: white;position:relative;}

@@ -34,7 +34,7 @@ module.exports.load = (window) => {
     ytmusic-section-list-renderer.style-scope.ytmusic-browse-response { margin-top: 32px; }
     div#sections { margin-top: 32px; }
     ytmusic-tabs#tabs { margin-top: 32px; }
-    .content.style-scope.ytmusic-tabbed-search-results-renderer { margin-top: 32px; }
+    .content.style-scope.ytmusic-tabbed-search-results-renderer { margin-top: 32px !important; }
     div#back-button img { width: 16px; }
     ytmusic-header-renderer.style-scope.ytmusic-browse-response {margin-top: 32px;}
     ytd-multi-page-menu-renderer div#container > div#sections {margin-top: 0px !important;}

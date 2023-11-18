@@ -1,6 +1,7 @@
 module.exports.info = {
     name: "WhiteColorCSS"
 }
+
 module.exports.load = (window) => {
     window.webContents.insertCSS(`
     #primaryProgress.tp-yt-paper-progress { background: white !important }

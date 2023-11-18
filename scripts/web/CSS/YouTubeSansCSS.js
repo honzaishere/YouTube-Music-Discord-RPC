@@ -44,7 +44,18 @@ module.exports.load = (window) => {
         .autoplay.ytmusic-tab-renderer .subtitle.ytmusic-tab-renderer {font-family: "YouTube Sans",sans-serif !important}
         .song-button.ytmusic-av-toggle, .video-button.ytmusic-av-toggle {font-family: "YouTube Sans",sans-serif !important}
         #info.yt-player-error-message-renderer {font-family: "YouTube Sans",sans-serif !important}
-        .song-data-container h1 {font-family: "YouTube Sans",sans-serif !important}}
-        .song-data-container h3 {font-family: "YouTube Sans",sans-serif !important}}
+        .song-data-container h1 {font-family: "YouTube Sans",sans-serif !important}
+        .song-data-container h3 {font-family: "YouTube Sans",sans-serif !important}
+        .floated-label-placeholder.tp-yt-paper-input-container {font-family: "YouTube Sans",sans-serif !important}
+        .autoplay.ytmusic-player-queue .title.ytmusic-player-queue {font-family: "YouTube Sans",sans-serif !important}
+        .strapline.ytmusic-shelf-renderer {font-family: "YouTube Sans",sans-serif !important}
+        ytmusic-carousel-shelf-basic-header-renderer[carousel-style=MUSIC_CAROUSEL_SHELF_BASIC_HEADER_STYLE_TITLE_TWO] .title.ytmusic-carousel-shelf-basic-header-renderer {font-family: "YouTube Sans",sans-serif !important}
+        .section-heading.ytmusic-add-to-playlist-renderer {font-family: "YouTube Sans",sans-serif !important}
+        #title.ytmusic-playlist-add-to-option-renderer {font-family: "YouTube Sans",sans-serif !important}
+        .privacy.ytmusic-playlist-add-to-option-renderer, .byline.ytmusic-playlist-add-to-option-renderer {font-family: "YouTube Sans",sans-serif !important}
+        .tab.ytmusic-tabs {font-family: "YouTube Sans",sans-serif !important;}
+        button.ytmusic-sort-filter-button-renderer {font-family: "YouTube Sans",sans-serif !important;}
+        .text.ytmusic-menu-title-renderer {font-family: "YouTube Sans",sans-serif !important;}
+        .text.ytmusic-multi-select-menu-item-renderer {font-family: "YouTube Sans",sans-serif !important;}
     `)
 }
