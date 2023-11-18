@@ -3,7 +3,4 @@ module.exports = {
         const PluginSetting = require("./handlers/" + setting)
         PluginSetting()
     },
-    enable: () => {},
-    disable: () => {},
-    preload: () => {}
 }

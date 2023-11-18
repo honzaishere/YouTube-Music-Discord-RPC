@@ -1,33 +1,37 @@
+let preloadPath = "";
+let wasPreloadEnabled = false;
+let currentWindow;
+
 const electron = require("electron")
 const path = require("path");
 const unhandled = require("electron-unhandled")
 
-const {finishWebLoad, preloadPlugins, addTray, bypassNetwork} = require("./scripts/web/WebManager");
-const {createDatabase, get, set, getJSON} = require("./scripts/database/PluginManager");
-const {getLastSongInfo} = require("./scripts/database/PluginManager");
-const store = require("electron-store");
+const { get } = require("./scripts/database/PluginManager")
+const {finishWebLoad, redoFinishWebLoad} = require("./scripts/web/WebManager");
+const {getLastSongInfo, createDatabase} = require("./scripts/database/PluginManager");
+const {bypassNetwork} = require("./scripts/web/Managers/Window/networkManager")
+const {addTray} = require("./scripts/web/Managers/Window/windowManager")
+const {preloadPlugins} = require("./scripts/web/Managers/Window/pluginManager");
 
 const gotTheLock = electron.app.requestSingleInstanceLock();
 if (!gotTheLock) {
     process.exit()
 }
 
-let w
+unhandled({showDialog: false, logger: console.log})
 
-unhandled({ showDialog: false, logger: console.log })
-
-if(get("gamer-mode") === true) {
-    console.log(`[Window] app.disableHardwareAcceleration() called.`)
+if (get("gamer-mode") === true) {
     electron.app.disableHardwareAcceleration()
 }
 
 electron.app.on("ready", async () => {
-    let pr
-    if(get("adblocker") === true) {
-        pr = path.join(__dirname, "Preload.js")
-    } else {
-        pr = path.join(__dirname, "NoAdPreload.js")
+    if (get("adblocker") === true) {
+        preloadPath = path.join(__dirname, "Preload.js")
     }
+    if (get("adblocker") === false) {
+        preloadPath = path.join(__dirname, "NoAdPreload.js")
+    }
+
     const window = new electron.BrowserWindow(
         {
             title: "YouTube Music",
@@ -36,7 +40,7 @@ electron.app.on("ready", async () => {
             minWidth: 1280,
             minHeight: 720,
             webPreferences: {
-                preload: pr,
+                preload: preloadPath,
                 nodeIntegration: true
             },
             frame: false
@@ -44,12 +48,8 @@ electron.app.on("ready", async () => {
     )
 
     this.browserWindow = window
-    w = window
+    currentWindow = window
     electron.Menu.setApplicationMenu(null)
-    const is = require("electron-is")
-    if(is.dev()) {
-        w.webContents.openDevTools({ mode: "detach" })
-    }
 
     bypassNetwork(window)
     preloadPlugins(window)
@@ -58,63 +58,55 @@ electron.app.on("ready", async () => {
 
     const oldSongInfo = getLastSongInfo()
 
-    if(get("resume-playback-on-launch") === true) {
-        console.log(`[Window] Loading YouTube Music page with last video...`)
+    if (get("resume-playback-on-launch") === true) {
         try {
             window.loadURL(`https://music.youtube.com/watch?v=${oldSongInfo.info.details.videoId || undefined}&t=${oldSongInfo.time}&list=${oldSongInfo.list}`).then(() => {
-            if(window.webContents.getURL().includes("https://music.youtube.com")) {
-                console.log(`[Window] Showing window`)
                 window.show()
-            } else {
-                console.log(`[Window] Got consent page, inserting css`)
+            })
+        } catch (e) {
+            window.loadURL("https://music.youtube.com/").then(() => {
                 window.show()
-            }
-        })
-        } catch(e) {
-            console.log(`[Window] Loading YouTube Music page...`)
-            window.loadURL("https://music.youtube.com/").then(async () => {
-                if(window.webContents.getURL().includes("https://music.youtube.com")) {
-                    console.log(`[Window] Showing window`)
-                    window.show()
-                } else {
-                    console.log(`[Window] Got consent page, inserting css`)
-                    window.show()
-                }
             })
         }
     } else {
-        console.log(`[Window] Loading YouTube Music page...`)
-        window.loadURL("https://music.youtube.com/").then(async () => {
-            if(window.webContents.getURL().includes("https://music.youtube.com")) {
-                console.log(`[Window] Showing window`)
-                window.show()
-            } else {
-                console.log(`[Window] Got consent page, inserting css`)
-                window.show()
-            }
+        window.loadURL("https://music.youtube.com/").then(() => {
+            window.show()
         })
     }
 
     electron.ipcMain.on("preload-enabled", () => {
-        console.log("[Preload] Preload script enabled")
-        finishWebLoad(window)
+        if (wasPreloadEnabled === true) {
+            redoFinishWebLoad(window)
+            return
+        }
+        if (wasPreloadEnabled === false) {
+            finishWebLoad(window)
+            wasPreloadEnabled = true
+        }
+    })
+
+    window.webContents.on("render-process-gone", () => {
+        electron.dialog.showMessageBox({
+            title: "YouTube Music",
+            message: "Unfortunately, it looks like that YouTube Music has crashed. Please reload the app.",
+            icon: path.join(__dirname, "..", "..", "icons", "tray.png")
+        })
     })
 })
 
 electron.app.on("second-instance", () => {
-    if(!w) {
-        console.log(`[Window] Already one session running, closing...`)
+    if (!currentWindow) {
         process.exit()
         return
     }
 
-    if(w.isMinimized()) {
-        w.restore()
+    if (currentWindow.isMinimized()) {
+        currentWindow.restore()
     }
 
-    if(!w.isVisible()) {
-        w.show()
+    if (!currentWindow.isVisible()) {
+        currentWindow.show()
     }
 
-    w.focus()
+    currentWindow.focus()
 })
